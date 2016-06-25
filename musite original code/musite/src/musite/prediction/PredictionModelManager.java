@@ -19,6 +19,8 @@
 package musite.prediction;
 
 import java.beans.PropertyChangeSupport;
+//property类在应用程序运行时被bean调用，用于建立用户接口，bean的descriptor(接下一行)
+//可通过bean-infos和introspection得到，
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
