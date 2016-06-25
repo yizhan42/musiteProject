@@ -1,5 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" ?>
 
+//这个是JavaSE里面的swing部分内容，关于图形界面开发的一个插件Matisse Form生成的。一般在8.x版本以上的myEclipse中都有自带这个插件。
+
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="MusiteMenuBar">
