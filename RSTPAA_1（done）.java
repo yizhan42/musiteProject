@@ -8,7 +8,7 @@ public class test
 	public static void main(String[] args)
 	{
 		// just example.
-		c1("ABFHDKDNDHDHD",1,1);
+		c1("ABCDEFGHIJKLMNO",3,1);
 	}
 	
 	public static double[] c1(String Seri,int k, int w)
@@ -18,12 +18,14 @@ public class test
 		
 		double[][] dataHHP=GetdataHHP();
 		
-		Show(dataHHP);
+		//Show(dataHHP);
 		
 		
 		double[][] d1=GetColumn(dataHHP,0,20);
 		double[][] d2=GetColumn(dataHHP,1,20);
 		double[][] d3=GetColumn(dataHHP,2,20);
+		
+		//Show(d1);	Show(d2);	Show(d3);
 		
 		Statistics s=new Statistics(Inv(d1,20));
 		double y1=s.getStdDev();
@@ -37,30 +39,38 @@ public class test
 		double[] stdm=new double[3];
 	    stdm[0]=y1;	stdm[1]=y2;	stdm[2]=y3;
 	    
+	    System.out.println("stdm");
+	    Show(stdm);
+	    
 		 /** lengh (seri) */
 		int Len=Seri.length(); 
 		String OSet="ACDEFGHIKLMNPQRSTVWY";
-	
 		
 		// B0 :
 		double[] P=new double[20];
-		for(int i=0;i<20;i++)	P[i]=0;
+		for(int i=0;i<20;i++)	
+			P[i]=0;
 		
 		
 		// B1 :
 		for(int i=0;i<Len;i++)
 			for(int j=0;j<20;j++)
 				if(Seri.substring(i, i+1).equals(OSet.substring(j, j+1)))
-					P[i]=P[j]+1;
+					P[j]=P[j]+1;
 		
 		// B2 :
+		//System.out.println("aP : ");
+		//Show(P);
+		
 		for(int i=0;i<P.length;i++)
 			P[i]=(P[i]/(double)(Len));
 		
+		//System.out.println("P : ");
+		//Show(P);
 		
 		// B3 :
 		double[] f = null;
-		double[] tao = null;
+		double[] tao = new double[k];
 		
 		if (k==0) f=P;
 		else
@@ -68,36 +78,66 @@ public class test
 			for(int i=0;i<k;i++)
 			{
 				tao[i]=0;
-				for(int j=0;j<Len-i;j++)
+				for(int j=0;j<(Len-i-1);j++)
 				{
+					/**
+					System.out.println(OSet+"\t , "+Seri.substring(j, j+1)+" / "+j +"/ "+(j+1));
+					System.out.println(OSet+"\t , "+Seri.substring(j+i+1, j+i+2)+" / "+(j+i+1) 
+											+"/ "+(j+i+2)+" s");
+					*/
 					
 					int[] num=find(OSet,Seri.substring(j, j+1));
-					int[] numk=find(OSet,Seri.substring(j+i, j+i+1));
+					int[] numk=find(OSet,Seri.substring(j+i+1, j+i+2));
+					
+					//System.out.println("numk : ");
+					//Show(numk);
 					
 					double tranJ=0;
-					if(sum(num)!= 0 && sum(numk)!= 0)
+					if((num.length!= 0) && (numk.length != 0) )
 					{
 						
-						double[][] H1=new double[num.length][3];
-						double[][] H1k=new double[num.length][3];
-			            
-			            H1[0]=G(dataHHP,num,1);
-			            H1[1]=G(dataHHP,num,2);
-			            H1[2]=G(dataHHP,num,3);
+						double[][] H1=new double[3][num.length];
+						double[][] H1k=new double[3][num.length];
+						
+						//Show(num);
+						//Show(numk);
+						
+			            H1[0]=G(dataHHP,num,0);
+			            H1[1]=G(dataHHP,num,1);
+			            H1[2]=G(dataHHP,num,2);
 			            						
-						H1k[0]=G(dataHHP,num,1);
-			            H1k[1]=G(dataHHP,num,2);
-			            H1k[2]=G(dataHHP,num,3);
+						H1k[0]=G(dataHHP,numk,0);
+			            H1k[1]=G(dataHHP,numk,1);
+			            H1k[2]=G(dataHHP,numk,2);
+			            
+			            //System.out.println("h1");
+			            //Show(H1);
 			            
 			            Matrix h1=new Matrix(H1);
 			            Matrix h1k=new Matrix(H1k);
+			            
+			            //System.out.println("h1k");
+			            //Show(H1k);
+			            
+			            //System.out.println("-");
+			            //Show(h1k.getArray());
+			            
+			            h1=h1.transpose();
+			            h1k=h1k.transpose();
+			            
+			            //Show(h1.getArray());
+			            
+			            //System.out.println("h1k transposé.");
+			            //Show(h1k.getArray());
 			            
 			            double[][] mstdm=new double[1][3];
 			            mstdm[0]=stdm;
 			            		
 			            Matrix Mstdm=new Matrix(mstdm);
+			           
+			            //Show(Mstdm.getArray());
+			            
 			            h1=h1.arrayRightDivide(Mstdm);
-	
 			            h1k=h1k.arrayRightDivide(Mstdm);
 			            
 			            Matrix hMinus=h1k.minus(h1);
@@ -107,6 +147,7 @@ public class test
 			            int dimC=hMinus.getColumnDimension();
 			            
 			            tranJ=Sum(Pow(hD,2,dimR,dimC), dimR,dimC)/3.0;
+			            //System.out.println(tranJ);
 					}
 					else
 					{
@@ -115,7 +156,11 @@ public class test
 					
 					tao[i]=tao[i]+tranJ;
 				}
-				tao[i]=tao[i]/(double)(Len-i);
+				
+				//System.out.println(tao[i]+" , "+(Len-i-1) );
+				
+				tao[i]=tao[i]/(double)(Len-i-1);
+				//System.out.println(tao[i]);
 			}
 		}
 			
@@ -125,7 +170,9 @@ public class test
 			tempaa[i]=0;
 		  
 		double sumtao=sum(tao)*w;
-	   
+		//Show(tao);
+		//System.out.println(sumtao);
+		
 		for(int i=0;i<20+k;i++)
 	    {
 	    	if(i<20)	tempaa[i]=P[i]/(1+sumtao);
@@ -133,8 +180,9 @@ public class test
 	    }
 	        
 	    f=tempaa;
+	    Show(f);
 		
-		return f;
+	    return f;
 				
 	}
 	
@@ -150,17 +198,47 @@ public class test
 			}
 			System.out.println(s);
 		}
+		
+		System.out.println();
 	}
 
 	public static double[] Inv(double[][] d1,int k) 
 	{
+		Show(d1);
+		
 		double[] T=new double[k];
 		for(int i=0;i<k;i++)
 		{
-			T[i]=d1[i][1];
+			T[i]=d1[i][0];
 		}
 		
+		Show(T);
 		return T;
+	}
+
+	public static void Show(Object Ob) 
+	{
+		String s="";
+		
+		if(Ob instanceof double[])
+		{
+			double[] T=(double[]) Ob;
+			for(int i=0;i<T.length;i++)
+			{
+				s+=T[i]+"\t";
+			}
+		}
+		
+		if(Ob instanceof int[])
+		{
+			int[] T=(int[]) Ob;
+			for(int i=0;i<T.length;i++)
+			{
+				s+=T[i]+"\t";
+			}
+		}
+		
+		System.out.println(s);
 	}
 
 	public static double[][] GetColumn(double[][] dataHHP, int i,int l) 
@@ -177,7 +255,6 @@ public class test
 
 	private static double [][] GetdataHHP() 
 	{
-		
 		double [][]dataHHP=new double[20][6];
 		
 		double[] d0={0.6200,   -0.5000,   15.0000,    2.3500,    9.8700,    6.1100};
@@ -266,13 +343,19 @@ public class test
 		return sum;
 	}
 
+	/**
+	 * return first index.
+	 * @param oSet
+	 * @param st
+	 * @return
+	 */
 	public static int[] find(String oSet, String st) 
 	{
 		ArrayList<Integer> L=new ArrayList<Integer>();
 		
 		int l=oSet.length();
 		int lx=st.length();
-		for(int i=0;i<(l-lx);i++)
+		for(int i=0;i<(l-lx+1);i++)
 		{
 			if(oSet.substring(i, i+lx).equalsIgnoreCase(st))
 				L.add(i);
