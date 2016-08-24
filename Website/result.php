@@ -1,13 +1,53 @@
 <?php
 	if(isset($_POST['submitInput']))
 	{
-		$input = $_POST['inputSeq'];
 		$selection = $_POST['selection'];
-		//echo "$input";
-		$myfile = fopen("input.txt", "w") or die("Unable to open file!");
-		fwrite($myfile, $input);
-		fclose($myfile);
-		$output = shell_exec("java -jar musitePractice.jar $selection");
+
+		$input = $_POST['inputSeq'];
+
+		if(!empty($selection))
+		{
+			if(!empty($input))
+			{
+				//echo "$input";
+				$myfile = fopen("input.txt", "w") or die("Unable to open file!");
+				fwrite($myfile, $input);
+				fclose($myfile);
+				$output = shell_exec("java -jar musitePractice.jar input.txt $selection");
+			}
+			else
+			{
+				$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+				$target_dir = "/storage/www/musite_dev/public_html/newMuSite";
+				//$fp = fopen($_FILES['fileToUpload']['tmp_name'], 'rb');
+				//$uploadOk = 1;
+
+				
+				//if(!unlink("Assignment 7.docx"))
+				//	echo "Error";
+				//echo $target_file;
+				//if(!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file))
+				//	echo "error";
+
+				// Check file size
+				if ($_FILES["fileToUpload"]["size"] > 500000) 
+				{
+				    echo "Sorry, your file is too large.";
+				    //$uploadOk = 0;
+				}
+				else
+				{
+					if(!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file))
+						echo "error move file";
+
+					$output = shell_exec("java -jar musitePractice.jar $target_file $selection");
+
+					if(!unlink($target_file))
+						echo "Error unlink file";
+
+				}
+			}
+		}
 		//echo "$output";
 		$to = $_POST['emailAddress'];
 		//echo "$to";
@@ -30,7 +70,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>musite</title>
+	<title>Result</title>
 	<link type="text/css" href="css/custom/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
 	<link type="text/css" href="css/jquery.jqplot.css" rel="stylesheet" />
 	<link type="text/css" href="css/site.css" rel="stylesheet" />
@@ -83,7 +123,7 @@
 						border-color: darkgoldenrod;
 					}
 
-					input {
+					textarea {
 						background-color: beige;
 
 					}
@@ -154,6 +194,15 @@
 
         <!--list menu-->
         <div id="contentWrapper">
+        				<div class="list-group">
+			              <button type="button" class="list-group-item">Home</button>
+			              <button type="button" class="list-group-item">Download</button>
+			              <button type="button" class="list-group-item">User Manual</button>
+			              <button type="button" class="list-group-item">Screenshots</button>
+			              <button type="button" class="list-group-item">License</button>
+			              <button type="button" class="list-group-item">Release Notes</button>
+			              <button type="button" class="list-group-item">Acknowledgement</button>
+			            </div>
 						<div id="mainWrapper">
 							<div class="clear">
 
@@ -162,10 +211,6 @@
 									<fieldset>
 									<textarea name="Result" id="sequence" class="resizable" rows="25" cols="100"><?php echo "$output"; ?></textarea>
 									</fieldset>
-
-									<p>&nbsp; &nbsp;</p>
-									<button name="sendResult" type="submit" value="Send" class="btn btn-primary" id="submitBtn">Send Result</button>
-									<button type="reset" value="Reset" class="btn btn-primary" id="submitBtn">Reset</button>
 
 									<p>&nbsp; &nbsp;</p>
 									<p>

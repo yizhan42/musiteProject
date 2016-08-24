@@ -55,11 +55,42 @@
 						border-color: darkgoldenrod;
 					}
 
-					input {
-						background-color: beige;
-
-					}
+					
 			</style>
+
+			<script type="text/javascript">
+				function pasteExample1(){
+                    //var txt1;
+					var xmlhttp = new XMLHttpRequest();
+					xmlhttp.onreadystatechange = function(){
+					  if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+					     document.getElementById("accession_text").value = xmlhttp.responseText;
+					  }
+					};
+					xmlhttp.open("GET","files/uniprot_example.txt",true);
+					xmlhttp.send();
+
+					//var resultBox = document.getElementById("accession_text");
+					//resultBox.value = txt1;
+				}
+
+				function pasteExample2(){
+					//var txt2;
+					var xmlhttp = new XMLHttpRequest();
+					xmlhttp.onreadystatechange = function(){
+					  if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+					     document.getElementById("sequence").value= xmlhttp.responseText;
+					  }
+
+					};
+					xmlhttp.open("GET","files/fasta_example.txt",true);
+					xmlhttp.send();
+
+					//var resultBox = document.getElementById("sequence");
+					//resultBox.value = txt2;
+				}
+
+			</script>
 </head>
 <body>
 				<div id="titleDiv">
@@ -126,6 +157,15 @@
 
         <!--list menu-->
         <div id="contentWrapper">
+        				<div class="list-group">
+			              <button type="button" class="list-group-item">Home</button>
+			              <button type="button" class="list-group-item">Download</button>
+			              <button type="button" class="list-group-item">User Manual</button>
+			              <button type="button" class="list-group-item">Screenshots</button>
+			              <button type="button" class="list-group-item">License</button>
+			              <button type="button" class="list-group-item">Release Notes</button>
+			              <button type="button" class="list-group-item">Acknowledgement</button>
+			            </div>
 						<div id="mainWrapper">
 							<div class="clear">
 
@@ -139,7 +179,7 @@
 
 									<fieldset id="accessions">
 									<legend>Accessions:</legend>
-										<div class="inset">Input comma-separated accessions (limit of 100). <a id="uniprot_example" class="theme" href="files/uniprot_example.txt" target="_blank">example</a><br/>
+										<div class="inset">Input comma-separated accessions (limit of 100). <a id="uniprot_example" class="theme" onclick="pasteExample1()" href="javascript:void(0);">example</a><br/>
 										<select name="accession_type" id="accession_type" size="1">
 										<option value="uniprot">UniProt</option>
 										</select><strong>:</strong>
@@ -147,19 +187,24 @@
 										<input type="text" name="accession_text" id="accession_text" size="40" />
 										</div>
 									</fieldset>
-
+									<br>
+									<div id="bioform_or">OR</div>
+									<br>
 									<fieldset>
 									<legend>Sequence:</legend>
-									<div class="inset">Input protein sequence(s) in FASTA format (limit of 100). <a id="fasta_example" class="theme" href="files/fasta_example.txt" target="_blank">example</a><br/>
+									<div class="inset">Input protein sequence(s) in FASTA format (limit of 100). <a id="fasta_example" class="theme" onclick="pasteExample2()" href="javascript:void(0);" >example</a><br/>
 									<textarea name="inputSeq" id="sequence" class="resizable" rows="12" cols="100"></textarea></div><br>
 
+									<div id="bioform_or">OR</div>
+									<br>
 									<legend>Upload Sequence file:</legend>
-									<div class="inset">Input protein sequence(s) file in FASTA format (limit of 100). <a id="fasta_example" class="theme" href="files/fasta_example.txt" target="_blank">example</a><br/>
-									<label for="c">Upload File: </label>
-									<input id="c" name="uploadedFile" type="file" aria-required="true"></div><br>
+									<div class="inset">Input protein sequence(s) file in FASTA format (limit of 100). 
+									<a id="fasta_example" class="theme"></a><br/>
+									<label for="c"><br>Upload File: </label>
+									<input id="c" name="fileToUpload" type="file" aria-required="true"><br>
 
-									<div class="inset">If you want to send the result to your email, enter your email, otherwise leave it empty
-									<br>Your email: <input type="email" name="emailAddress" id="accession_text" size="39" /><br>
+									<label>Your email:</label><br>
+									<input type="email" name="emailAddress" id="accession_text" size="37" /><br>
 									<br></div>
 
 									<legend>Selections:</legend><br>
