@@ -92,9 +92,9 @@ public class RSTPAA
 
     	SD = getStdDev(dataHHP);
 
-    	//System.out.println(SD[0] + ", " + SD[1] + ", " + SD[2]);
+    	System.out.println(SD[0] + ", " + SD[1] + ", " + SD[2]);
 
-    	for(int i = 0; i < tempSeri.length; i++)
+    	for(int i = 0; i < len; i++)
     	{
     		for(int j = 0; j < 20; j++)
     		{
@@ -107,7 +107,7 @@ public class RSTPAA
 
     	for(int i = 0; i < p.length; i++)
     	{
-    		p[i] /= tempSeri.length;
+    		p[i] /= len;
     		//System.out.println(p[i]);
     	}
 
@@ -117,21 +117,26 @@ public class RSTPAA
     	double []H1K = new double[3];
     	double sum = 0.0;
     	double tranJ = 0.0;
-        int t = 0;
 
     	if(k != 0)
     	{
-	    	for(int i = 1; i <= k; i++)
+	    	for(int i = 0; i < k; i++)
 	    	{
 	    		tao.add(0.0);
 
-	    		for(int j = 1; j <= len - i; j++)
+	    		for(int j = 0; j < len - i; j++)
 	    		{
-	    			num = oSet.indexOf(tempSeri[j-1]);
-	    			numk = oSet.indexOf(tempSeri[j+i-1]);
+	    			num = oSet.indexOf(tempSeri[j]);
 
-	    			//System.out.println("num is " + num + "numk is " + numk);
-
+	    			if(i == 0)
+	    			{
+	    				numk = oSet.indexOf(tempSeri[1]);
+	    			}
+	    			else
+	    			{
+	    				numk = oSet.indexOf(tempSeri[j + i]);
+	    			}
+	    	
 	    			if(num >= 0 && numk >= 0)
 	    			{
 	    				H1[0] = dataHHP[num][0] / SD[0];
@@ -141,48 +146,40 @@ public class RSTPAA
 	    				H1K[0] = dataHHP[numk][0] / SD[0];
 	    				H1K[1] = dataHHP[numk][1] / SD[1];
 	    				H1K[2] = dataHHP[numk][2] / SD[2];
+               			//H1K = {{dataHHP[numk][1]},{dataHHP[numk][2]}, {dataHHP[numk][3]}};
 
 	    				for(int z = 0; z < 3; z++)
 	    				{
-	    					sum += Math.pow(H1K[z] - H1[z], 2);
-                            
+	    					sum += Math.pow((H1K[z] - H1[z]), 2);
 	    				}
-						tranJ = sum / 3;
+
+	    				tranJ = sum / 3;
+
+	    				//System.out.println("tranJ is " + tranJ);
 	    			}
 	    			else
 	    			{
 	    				tranJ = 0;
 	    			}
-
-	    			//System.out.println(tao.get(i - 1));
-	    			//System.out.println("tranJ is " + tranJ);
-
-	    			
+	    			tao.set(i, tao.get(i) + tranJ);
+	    			//System.out.println("first tao " + tao.get(i));
 	    		}
 
-	    		tao.set(i-1, tao.get(i-1) + tranJ);
-
-                sum = 0;
-
-                //System.out.println("len - i is " + (len - i));
-                //System.out.println("fen zi tao is " + tao.get(i - 1));
-	    		tao.set(i - 1, (tao.get(i - 1) / (len - i)));
-	    		System.out.println("tao is " + tao.get(i - 1));
+				tao.set(i, tao.get(i) / (len - i));
+				//System.out.println("secand tao " + tao.get(i));
 	    	}
-    	}
+    	}	
 
+    	System.out.println("num is " + num + "numk is " + numk);
+    	System.out.println("H1[0] " + H1[0]);
 
     	double sumtao = 0.0;
-        //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@");
 
     	for(int i = 0; i < tao.size(); i++) 
-    	{
-            
+    	{   
 		    //System.out.println(tao.get(i));
 		    sumtao += tao.get(i);
 		}  
-
-        //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@");
 
 		sumtao *= w;
 
@@ -199,8 +196,6 @@ public class RSTPAA
     		}
     		else
     		{
-                //System.out.println("i = "+i);
-               // System.out.println("tao.get(i - 20) = "+tao.get(i - 20));
     			tempaa[i] = w * tao.get(i - 20) / (1 + sumtao);
     		}	
     	}
@@ -210,7 +205,7 @@ public class RSTPAA
     	for(int i = 0; i < 20 + k; i++) 
     	{   
 		    //System.out.println(df.format(tempaa[i]));
-		    System.out.println("Colum " + i + " is " + tempaa[i]);
+		    //System.out.println("Colum " + i + " is " + tempaa[i]);
 
 		}  
 
