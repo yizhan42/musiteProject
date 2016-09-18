@@ -1,0 +1,31 @@
+VSL2 Predictor of Intrinsically Disordered Regions
+Center for Information Science and Technology
+Temple University, Philadelphia, PA
+ 
+Predicted Disordered Regions:
+1-19
+ 
+Prediction Scores:
+========================================
+NO.     RES.    PREDICTION      DISORDER
+----------------------------------------
+1	A	0.999143	D
+2	K	0.999146	D
+3	D	0.999146	D
+4	K	0.999147	D
+5	K	0.999144	D
+6	K	0.999139	D
+7	L	0.999131	D
+8	M	0.999123	D
+9	L	0.999117	D
+10	K	0.999114	D
+11	K	0.999114	D
+12	L	0.999118	D
+13	D	0.999123	D
+14	A	0.999130	D
+15	A	0.999137	D
+16	L	0.999142	D
+17	P	0.999144	D
+18	P	0.999145	D
+19	P	0.999145	D
+========================================
