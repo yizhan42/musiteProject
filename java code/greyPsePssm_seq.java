@@ -28,7 +28,9 @@ public class greyPsePssm_seq
             {
                 for(int j = 0; j < 20; j++)
                 {
-                    pssm[i][j] = 1.0 / (1 + exp(-pssm20[i][j]));
+                    if((1 + exp(-pssm20[i][j])) == 0) pssm[i][j] = 0;
+                    else
+                        pssm[i][j] = 1.0 / (1 + exp(-pssm20[i][j]));
                 }
             }           
             for(int k = 0; k < 20; k++)
@@ -42,6 +44,12 @@ public class greyPsePssm_seq
                 psepssm[20+2*k-2] = abs(p[0]);
                 psepssm[20+2*k-1] = abs(p[1]);     
             }
+            
+            System.out.println("================psepssm================");
+            for(int i = 0; i < 60; i++)
+            {  
+                System.out.println(i+". "+psepssm[i]);
+            }
         }
 
         else if(n == 2)
@@ -52,7 +60,9 @@ public class greyPsePssm_seq
             {
                 for(int j = 0; j < 20; j++)
                 {
-                    pssm[i][j] = 1.0 / (1 + exp(-pssm20[i][j]));
+                    if((1 + exp(-pssm20[i][j])) == 0) pssm[i][j] = 0;
+                    else
+                        pssm[i][j] = 1.0 / (1 + exp(-pssm20[i][j]));
                 }
             }           
             for(int k = 0; k < 20; k++)
@@ -67,17 +77,17 @@ public class greyPsePssm_seq
                 psepssm[20+3*k-2] = abs(p[1]);    
                 psepssm[20+3*k-1] = abs(p[2]);  
             }
+            
+            System.out.println("================psepssm================");
+            for(int i = 0; i < 80; i++)
+            {
+                System.out.println(i+". "+psepssm[i]);
+            }
         }
         
         return psepssm;
     }
     
-    
-    
-    static double inv (double a)
-    {
-        return 1 / a; 
-    }
 
     public static double mean(double[] m) 
     {
@@ -92,6 +102,7 @@ public class greyPsePssm_seq
     public static double[] GM21Param(double[] x)
     {
         int n = x.length;
+        
         double[] x1 = new double[n];
         Arrays.fill(x1, 0.0);
 
@@ -111,7 +122,11 @@ public class greyPsePssm_seq
         }
 
         double[][] b = new double[n - 1][3];
-        Arrays.fill(b, 0.0);
+        for(int i = 0; i < n-1; i++)
+        {
+            Arrays.fill(b[i], 0.0);
+        }
+        
         for(int k = 0; k < n - 1; k++)
         {
             b[k][0] = -x[k + 1];
@@ -120,16 +135,22 @@ public class greyPsePssm_seq
         }
 
         double[][] y = new double[n - 1][1];
-        Arrays.fill(y, 0.0);
+        for(int i = 0; i < n-1; i++)
+        {
+            Arrays.fill(y[i], 0.0);
+        }
+        
 
         for(int k = 0; k < n - 1; k++)
         {
             y[k][0] = x[k + 1] - x[k];
         }
 
-        //inv 写好了
-        double[] a = new double[n];
-        //a = inv(B'*B)*B'*Y; 看不懂
+       
+        //a = inv(B'*B)*B'*Y
+        double[][] a;
+        a = MyMatrix.multiply(MyMatrix.multiply(MyMatrix.invert(MyMatrix.multiply(MyMatrix.transpose(b), b)),MyMatrix.transpose(b)),y);
+        
         double c = 0.0, d = 0.0, e = 0.0, f = 0.0, g = 0.0, h = 0.0, i = 0.0, l = 0.0;
 
         for(int k = 1; k < n; k++)
@@ -141,13 +162,13 @@ public class greyPsePssm_seq
             g += x[k] * z[k];
             h += x[k - 1] * x[k];
             i += x[k - 1] * z[k];
-            l = x[n] - x[1];
+            l = x[n-1] - x[1];
         }
 
         double[] p = new double[11];
-        p[0] = a[0]; 
-        p[1] = a[1]; 
-        p[2] = a[2];
+        p[0] = a[0][0]; 
+        p[1] = a[1][0]; 
+        p[2] = a[2][0];
         p[3] = c; 
         p[4] = d; 
         p[5] = e;
@@ -158,27 +179,9 @@ public class greyPsePssm_seq
         p[10] = l;
 
         //double aa = isnan means Array elements that are NaN;
-        //比如 分母为0，不知道java怎么实现
-
-        //p[aa] = 0;
+        //p[aa] = 0;在前面求pssm时已写到
         return p;
 
     }
-   
-    public static void main(String[] args)
-    {
-    	//pssm 不知道是几位数组
-
-    	double[] psepssm = new double[60];
-    	Arrays.fill(psepssm, 0);
-
-    	//mean 也写好了
-
-    	for(int i = 0; i < 20; i++)
-    	{
-    		
-    	}
-
-	}
 
 }
