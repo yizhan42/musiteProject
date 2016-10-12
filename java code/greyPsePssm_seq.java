@@ -39,10 +39,11 @@ public class greyPsePssm_seq
                 {
                     pssm_column[m] = pssm[m][k];
                 }
+                //psepssm前20个元素是pssm20列中每列的平均值
                 psepssm[k] = mean(pssm_column);
                 p = GM21Param(pssm_column);
-                psepssm[20+2*k-2] = abs(p[0]);
-                psepssm[20+2*k-1] = abs(p[1]);     
+                psepssm[20+2*k] = abs(p[0]);
+                psepssm[20+2*k+1] = abs(p[1]);     
             }
             
             System.out.println("================psepssm================");
@@ -73,9 +74,9 @@ public class greyPsePssm_seq
                 }
                 psepssm[k] = mean(pssm_column);
                 p = GM21Param(pssm_column);
-                psepssm[20+3*k-3] = abs(p[0]);
-                psepssm[20+3*k-2] = abs(p[1]);    
-                psepssm[20+3*k-1] = abs(p[2]);  
+                psepssm[20+3*k] = abs(p[0]);
+                psepssm[20+3*k+1] = abs(p[1]);    
+                psepssm[20+3*k+2] = abs(p[2]);  
             }
             
             System.out.println("================psepssm================");
